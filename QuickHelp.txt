@@ -8,9 +8,13 @@ make run (will run the executable in the directory that the makefile is configur
 Git Actions:
 
 git init -b main (to make a git repository)
-git remote add origin REMOTE-URL (publish repo to GitHub, where REMOTE-URL is the url that it will be hosted on)
-git remote -v (to check all remotes)
 git status (optional, outputs all changed files)
 git add . (to stage all files) OR git add file1 file2 (to stage specific files)
 git commit -m "Your commit message here" (to commit)
 git push origin main (to push, with main being the branch name)
+
+GitHub Actions:
+
+gh repo create (to make a repo on GitHub)
+git remote add origin REMOTE-URL (to locally add GitHub repo, where REMOTE-URL is the url that it is hosted on)
+git remote -v (to check all remotes)
