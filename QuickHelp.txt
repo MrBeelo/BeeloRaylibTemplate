@@ -18,3 +18,4 @@ GitHub Actions:
 gh repo create (to make a repo on GitHub)
 git remote add origin REMOTE-URL (to locally add GitHub repo, where REMOTE-URL is the url that it is hosted on)
 git remote -v (to check all remotes)
+git pull REMOTE-URL main (to pull from the main branch of a remote url)
