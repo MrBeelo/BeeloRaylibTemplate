@@ -4,7 +4,7 @@
 int main(void)
 {
     InitWindow(800, 450, "Beelo's Raylib Template");
-    SearchAndSetResourceDir("assets");
+    SearchAndSetResourceDir("res");
 
     Texture2D blob = LoadTexture("blob.png");
     

@@ -2,7 +2,7 @@
 SRC_DIR = src
 OBJ_DIR = obj/linux
 BUILD_DIR = bin
-ASSETS_DIR = assets
+RESOURCES_DIR = res
 HEADERS_DIR = $(SRC_DIR)/headers
 LIBRARIES_DIR = lib/linux
 LIBRARY = $(LIBRARIES_DIR)/libraylib.a
@@ -14,7 +14,7 @@ LDFLAGS = -L $(LIBRARIES_DIR) -lraylib
 FILE_FORMAT = .cpp
 
 #Defaults to C++, change to c to use the C language.
-TARGET_LANGUAGE ?= c
+TARGET_LANGUAGE ?= c++
 #Defaults to linux, change to win for Windows or web for HTML5.
 TARGET_PLATFORM ?= linux
 
@@ -50,7 +50,7 @@ ifeq ($(TARGET_PLATFORM), web)
 	LIBRARIES_DIR = lib/web
 	EXECUTABLE = $(BUILD_DIR)/$(PROGRAM_NAME).html
 	CXXFLAGS += -DPLATFORM_WEB -DGRAPHICS_API_OPENGL_ES2
-	LDFLAGS += -s ASYNCIFY -s USE_GLFW=3 -s MIN_WEBGL_VERSION=2 -s MAX_WEBGL_VERSION=2 -s ENVIRONMENT=web --preload-file $(ASSETS_DIR) -s TOTAL_MEMORY=64MB
+	LDFLAGS += -s ASYNCIFY -s USE_GLFW=3 -s MIN_WEBGL_VERSION=2 -s MAX_WEBGL_VERSION=2 -s ENVIRONMENT=web --preload-file $(RESOURCES_DIR) -s TOTAL_MEMORY=64MB --shell-file shell.html
 endif
 
 ifeq ($(TARGET_LANGUAGE), c)
@@ -62,11 +62,12 @@ ifeq ($(TARGET_LANGUAGE), c++)
 endif
 
 # Find all .cpp files in the src directory
-SRC_FILES = $(wildcard $(SRC_DIR)/*$(FILE_FORMAT))
-OBJ_FILES = $(patsubst $(SRC_DIR)/%$(FILE_FORMAT), $(OBJ_DIR)/%.o, $(SRC_FILES))
+SRC_FILES = $(shell find $(SRC_DIR) -name '*$(FILE_FORMAT)')
+OBJ_FILES = $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SRC_FILES:$(FILE_FORMAT)=.o))
+
 
 # Targets
-all: $(EXECUTABLE) copy-assets
+all: $(EXECUTABLE) copy-res
 
 # Compile the program
 $(EXECUTABLE): $(OBJ_FILES)
@@ -74,14 +75,14 @@ $(EXECUTABLE): $(OBJ_FILES)
 	$(CXX) $(OBJ_FILES) $(LIBRARY) -o $@ $(LDFLAGS)
 
 # Compile each .cpp file into an object file
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%$(FILE_FORMAT) $(wildcard $(HEADERS_DIR)/*.h)
-	@mkdir -p $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%$(FILE_FORMAT)
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Copy assets folder to the build directory
-copy-assets:
+# Copy res folder to the build directory
+copy-res:
 	@mkdir -p $(BUILD_DIR)
-	@cp -r $(ASSETS_DIR) $(BUILD_DIR)
+	@cp -r $(RESOURCES_DIR) $(BUILD_DIR)
 
 clean-this:
 	rm -rf $(OBJ_DIR) $(BUILD_DIR)
