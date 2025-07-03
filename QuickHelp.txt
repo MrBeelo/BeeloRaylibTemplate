@@ -4,6 +4,7 @@ make (will run the makefile, output will be in the bin directory)
 make clean (will delete the bin and the obj directories)
 make clean-this (will delete the directories that the makefile is configured to export to)
 make run (will run the executable in the directory that the makefile is configured to export to)
+make copy-res (will copy the resources to the program's exported directory)
 
 Git Actions:
 
