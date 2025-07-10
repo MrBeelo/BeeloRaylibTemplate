@@ -17,8 +17,10 @@ TARGET_LANGUAGE ?= c
 TARGET_PLATFORM ?= linux
 #Defaults to x86_64, change to i386 (not for mac) or aarch64 (not for windows).
 TARGET_ARCH ?= x86_64
-#Defaults to raylib, change to blank for blank shell.
+#Defaults to raylib, change to blank for blank shell (used for web).
 TARGET_SHELL ?= raylib
+#GLibC version to use for linux (change in case 2.41 doesn't work).
+GLIBC_VERSION ?= 2.41
 
 ifeq ($(TARGET_LANGUAGE), c)
     FILE_FORMAT = .c
@@ -33,16 +35,18 @@ endif
 ifeq ($(TARGET_PLATFORM), win)
 	BUILD_DIR = bin/win
 	LIBRARIES_DIR = lib/win
-	TG_PLATFORM = windows
+	TG_PLATFORM = windows-gnu
 	CXXFLAGS += -DPLATFORM_DESKTOP
+	LDFLAGS += -lkernel32 -luser32 -lgdi32 -lopengl32 -lwinmm
 	EXECUTABLE = $(BUILD_DIR)/$(PROGRAM_NAME).exe
 endif
 
 ifeq ($(TARGET_PLATFORM), linux)
 	BUILD_DIR = bin/linux
 	LIBRARIES_DIR = lib/linux
-	TG_PLATFORM = linux
+	TG_PLATFORM = linux-gnu.$(GLIBC_VERSION)
 	CXXFLAGS += -DPLATFORM_DESKTOP
+	LDFLAGS += -lm -ldl -lpthread -lrt
 	EXECUTABLE = $(BUILD_DIR)/$(PROGRAM_NAME)
 endif
 
@@ -51,6 +55,7 @@ ifeq ($(TARGET_PLATFORM), osx)
 	LIBRARIES_DIR = lib/osx
 	TG_PLATFORM = macos
 	CXXFLAGS += -DPLATFORM_DESKTOP
+	LDFLAGS += -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
 	EXECUTABLE = $(BUILD_DIR)/$(PROGRAM_NAME)
 endif
 
@@ -82,8 +87,8 @@ $(EXECUTABLE): $(SRC_FILES)
 ifeq ($(TARGET_PLATFORM), web)
 	$(CXX) $(SRC_FILES) $(LIBRARY) -o $@ $(LDFLAGS)
 else
-	#$(CXX) -target $(TARGET_ARCH)-$(TG_PLATFORM) $(CXXFLAGS) $(LDFLAGS) $(SRC_FILES) -o $@ 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(SRC_FILES) -o $@ 
+	$(CXX) -target $(TARGET_ARCH)-$(TG_PLATFORM) $(CXXFLAGS) $(LDFLAGS) $(SRC_FILES) -o $@ 
+	#$(CXX) $(CXXFLAGS) $(LDFLAGS) $(SRC_FILES) -o $@ 
 endif
 
 copy-res:

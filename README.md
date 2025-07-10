@@ -3,8 +3,7 @@ Simple raylib template for raylib 5.5
 
 --HOW TO USE--
 
-1) Install dependencies. You need to install a compiler (depending on the platform),
-and make to build the project.
+1) Install dependencies. You need to install the zig compiler (emscripten for web), and make to build the project.
 
 2) Compile raylib. I've already compiled to Windows, Linux, and HTML5, 
 though if you're on MacOS or the library files don't work, I've provided the full
