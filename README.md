@@ -46,7 +46,7 @@ for raylib use, and of course a file with the main() function.
 win, osx, linux, web. If built for a desktop platform, running the command "make run" will automatically run the executable.
 
 6) obj: This is where all of the object files will be generated. This is only used for compiling the game. It has 
-4 subdirectories: win, osx, linux, web.
+4 subdirectories: win, osx, linux, web. (UPDATE: Now only used for web)
 
 
 --MAKEFILE COMMANDS--
