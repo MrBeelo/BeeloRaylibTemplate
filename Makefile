@@ -1,48 +1,55 @@
 SRC_DIR = src
-OBJ_DIR = obj/linux
 BUILD_DIR = bin
 RESOURCES_DIR = res
 HEADERS_DIR = $(SRC_DIR)/headers
 LIBRARIES_DIR = lib/linux
-LIBRARY = $(LIBRARIES_DIR)/libraylib.a
 PROGRAM_NAME = BeeloRaylibTemplate
 EXECUTABLE = $(BUILD_DIR)/$(PROGRAM_NAME)
-CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17 -I$(HEADERS_DIR)
+CXX = zig cc
+CXXFLAGS = -I$(HEADERS_DIR)
 LDFLAGS = -L $(LIBRARIES_DIR) -lraylib
 FILE_FORMAT = .c
+TG_PLATFORM = linux
 
 #Defaults to C, change to c++ to use the C++ language.
 TARGET_LANGUAGE ?= c
 #Defaults to linux, change to win for Windows, osx for MacOS, or web for HTML5.
 TARGET_PLATFORM ?= linux
+#Defaults to x86_64, change to i386 (not for mac) or aarch64 (not for windows).
+TARGET_ARCH ?= x86_64
 #Defaults to raylib, change to blank for blank shell.
 TARGET_SHELL ?= raylib
 
+ifeq ($(TARGET_LANGUAGE), c)
+    FILE_FORMAT = .c
+    CXX = zig cc
+endif
+
+ifeq ($(TARGET_LANGUAGE), c++)
+    FILE_FORMAT = .cpp
+    CXX = zig c++
+endif
+
 ifeq ($(TARGET_PLATFORM), win)
 	BUILD_DIR = bin/win
-	CXX = g++
-	OBJ_DIR = obj/win
 	LIBRARIES_DIR = lib/win
-	LDFLAGS += -lopengl32 -lgdi32 -lwinmm -lmingw32
+	TG_PLATFORM = windows
 	CXXFLAGS += -DPLATFORM_DESKTOP
 	EXECUTABLE = $(BUILD_DIR)/$(PROGRAM_NAME).exe
 endif
 
 ifeq ($(TARGET_PLATFORM), linux)
 	BUILD_DIR = bin/linux
-	CXX = g++
-	OBJ_DIR = obj/linux
 	LIBRARIES_DIR = lib/linux
+	TG_PLATFORM = linux
 	CXXFLAGS += -DPLATFORM_DESKTOP
 	EXECUTABLE = $(BUILD_DIR)/$(PROGRAM_NAME)
 endif
 
 ifeq ($(TARGET_PLATFORM), osx)
 	BUILD_DIR = bin/osx
-	CXX = clang++
-	OBJ_DIR = obj/osx
 	LIBRARIES_DIR = lib/osx
+	TG_PLATFORM = macos
 	CXXFLAGS += -DPLATFORM_DESKTOP
 	EXECUTABLE = $(BUILD_DIR)/$(PROGRAM_NAME)
 endif
@@ -65,27 +72,19 @@ ifeq ($(TARGET_PLATFORM), web)
 	endif
 endif
 
-ifeq ($(TARGET_LANGUAGE), c)
-    FILE_FORMAT = .c
-endif
-
-ifeq ($(TARGET_LANGUAGE), c++)
-    FILE_FORMAT = .cpp
-endif
-
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 SRC_FILES := $(call rwildcard, $(SRC_DIR)/, *$(FILE_FORMAT))
-OBJ_FILES = $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SRC_FILES:$(FILE_FORMAT)=.o))
 
 all: $(EXECUTABLE) copy-res
 
-$(EXECUTABLE): $(OBJ_FILES)
+$(EXECUTABLE): $(SRC_FILES)
 	@mkdir -p $(BUILD_DIR)
-	$(CXX) $(OBJ_FILES) $(LIBRARY) -o $@ $(LDFLAGS)
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%$(FILE_FORMAT)
-	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+ifeq ($(TARGET_PLATFORM), web)
+	$(CXX) $(SRC_FILES) $(LIBRARY) -o $@ $(LDFLAGS)
+else
+	#$(CXX) -target $(TARGET_ARCH)-$(TG_PLATFORM) $(CXXFLAGS) $(LDFLAGS) $(SRC_FILES) -o $@ 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(SRC_FILES) -o $@ 
+endif
 
 copy-res:
 	@mkdir -p $(BUILD_DIR)
