@@ -1,3 +1,18 @@
+#--SETTINGS--
+
+#Defaults to C, change to c++ to use the C++ language.
+TARGET_LANGUAGE ?= c
+#Defaults to linux, change to win for Windows, osx for MacOS, or web for HTML5.
+TARGET_PLATFORM ?= linux
+#Defaults to x86_64, change to i386 (not for mac) or aarch64 (not for windows).
+TARGET_ARCH ?= x86_64
+#Defaults to raylib, change to blank for blank shell (used for web).
+TARGET_SHELL ?= raylib
+#GLibC version to use for linux (change in case 2.41 doesn't work).
+GLIBC_VERSION ?= 2.41
+
+#--SCRIPT--
+
 SRC_DIR = src
 BUILD_DIR = bin
 RESOURCES_DIR = res
@@ -10,17 +25,6 @@ CXXFLAGS = -I$(HEADERS_DIR)
 LDFLAGS = -L $(LIBRARIES_DIR) -lraylib
 FILE_FORMAT = .c
 TG_PLATFORM = linux
-
-#Defaults to C, change to c++ to use the C++ language.
-TARGET_LANGUAGE ?= c
-#Defaults to linux, change to win for Windows, osx for MacOS, or web for HTML5.
-TARGET_PLATFORM ?= linux
-#Defaults to x86_64, change to i386 (not for mac) or aarch64 (not for windows).
-TARGET_ARCH ?= x86_64
-#Defaults to raylib, change to blank for blank shell (used for web).
-TARGET_SHELL ?= raylib
-#GLibC version to use for linux (change in case 2.41 doesn't work).
-GLIBC_VERSION ?= 2.41
 
 ifeq ($(TARGET_LANGUAGE), c)
     FILE_FORMAT = .c
@@ -76,6 +80,8 @@ ifeq ($(TARGET_PLATFORM), web)
 		LDFLAGS += --shell-file res/assets/shell/blank-shell.html
 	endif
 endif
+
+LIBRARY = $(LIBRARIES_DIR)/libraylib.a
 
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 SRC_FILES := $(call rwildcard, $(SRC_DIR)/, *$(FILE_FORMAT))
