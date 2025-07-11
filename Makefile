@@ -81,8 +81,6 @@ ifeq ($(TARGET_PLATFORM), web)
 	endif
 endif
 
-LIBRARY = $(LIBRARIES_DIR)/libraylib.a
-
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 SRC_FILES := $(call rwildcard, $(SRC_DIR)/, *$(FILE_FORMAT))
 
@@ -91,10 +89,9 @@ all: $(EXECUTABLE) copy-res
 $(EXECUTABLE): $(SRC_FILES)
 	@mkdir -p $(BUILD_DIR)
 ifeq ($(TARGET_PLATFORM), web)
-	$(CXX) $(SRC_FILES) $(LIBRARY) -o $@ $(LDFLAGS)
+	$(CXX) $(SRC_FILES) $(LIBRARIES_DIR)/libraylib.a -o $@ $(LDFLAGS)
 else
 	$(CXX) -target $(TARGET_ARCH)-$(TG_PLATFORM) $(CXXFLAGS) $(LDFLAGS) $(SRC_FILES) -o $@ 
-	#$(CXX) $(CXXFLAGS) $(LDFLAGS) $(SRC_FILES) -o $@ 
 endif
 
 copy-res:
