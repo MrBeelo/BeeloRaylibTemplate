@@ -9,13 +9,13 @@ ARCH ?= native
 #Run the project immediately after export?
 RUN = true
 
-#When exporting to linux, you may need to define the glibc version. Don't set this to true if not on linux!
-INCLUDE_GLIBC_VERSION ?= false
-GLIBC_VERSION ?= 2.41
+#The following are needed for linux only
 
-#If you get an error that some libraries aren't found, set this to true and set a search prefix.
-USE_SEARCH_PREFIX ?= false
-SEARCH_PREFIX ?= /usr
+#GlibC version to use. You should probably keep this at 2.41 unless it doesn't work.
+LINUX_GLIBC_VERSION ?= 2.41 
+#A search prefix is needed for the compiler to find all libraries. If you're on linux,
+#you can get away with using /usr, else you should download a minimal linux installation and use that(it must have a usr folder).
+LINUX_SEARCH_PREFIX ?= linux-usr-folder/
 
 #--SCRIPT--
 
@@ -25,14 +25,10 @@ ifeq ($(RUN), true)
 	FLAGS += run
 endif
 
-ifeq ($(INCLUDE_GLIBC_VERSION), true)
-	FLAGS += -Dtarget=$(ARCH)-$(PLATFORM).$(GLIBC_VERSION)
+ifeq ($(PLATFORM), linux-gnu)
+	FLAGS += -Dtarget=$(ARCH)-$(PLATFORM).$(LINUX_GLIBC_VERSION) --search-prefix $(LINUX_SEARCH_PREFIX)
 else
 	FLAGS += -Dtarget=$(ARCH)-$(PLATFORM)
-endif
-
-ifeq ($(USE_SEARCH_PREFIX), true)
-	FLAGS +=  --search-prefix $(SEARCH_PREFIX)
 endif
 
 build:
