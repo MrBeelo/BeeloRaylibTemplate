@@ -51,6 +51,13 @@ pub fn build(b: *std.Build) !void {
         exe.addCSourceFile(.{ .file = b.path(src)});
     }
     
+    const sdk_path_opt = b.option([]const u8, "macos-sdk-path", "Path to macOS SDK");
+    
+    if (sdk_path_opt) |sdk_path| {
+        const full_path = try std.fs.path.join(b.allocator, &[_][]const u8{sdk_path, "System/Library/Frameworks"});
+        exe.addSystemFrameworkPath(b.path(full_path));
+    }
+    
     b.installArtifact(exe);
     
     b.installDirectory(.{

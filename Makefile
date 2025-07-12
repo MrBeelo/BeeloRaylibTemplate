@@ -9,13 +9,15 @@ ARCH ?= native
 #Run the project immediately after export?
 RUN = true
 
-#The following are needed for linux only
+#A search prefix is needed for the compiler to find all libraries for linux and macos. You can get away with using /usr if
+#you're compiling on the same OS, otherwise you should provide a Linux/MacOS SDK and enter the usr folder from there.
+SEARCH_PREFIX ?= your-sdk/usr
 
-#GlibC version to use. You should probably keep this at 2.41 unless it doesn't work.
+#LINUX ONLY: GlibC version to use. You should probably keep this at 2.41 unless it doesn't work.
 LINUX_GLIBC_VERSION ?= 2.41 
-#A search prefix is needed for the compiler to find all libraries. If you're on linux,
-#you can get away with using /usr, else you should download a minimal linux installation and use that(it must have a usr folder).
-LINUX_SEARCH_PREFIX ?= linux-usr-folder/
+
+#MACOS ONLY: The path for the mac sdk.
+MAC_SDK_PATH ?= mac-sdk
 
 #--SCRIPT--
 
@@ -26,7 +28,9 @@ ifeq ($(RUN), true)
 endif
 
 ifeq ($(PLATFORM), linux-gnu)
-	FLAGS += -Dtarget=$(ARCH)-$(PLATFORM).$(LINUX_GLIBC_VERSION) --search-prefix $(LINUX_SEARCH_PREFIX)
+	FLAGS += -Dtarget=$(ARCH)-$(PLATFORM).$(LINUX_GLIBC_VERSION) --search-prefix $(SEARCH_PREFIX)
+else ifeq ($(PLATFORM), macos)
+	FLAGS += -Dtarget=$(ARCH)-$(PLATFORM) -Dmacos-sdk-path=$(MAC_SDK_PATH) --search-prefix $(SEARCH_PREFIX) 
 else
 	FLAGS += -Dtarget=$(ARCH)-$(PLATFORM)
 endif
