@@ -19,7 +19,6 @@ pub fn build(b: *std.Build) !void {
     exe.linkLibrary(raylib_artifact);
     
     exe.linkLibC();
-    exe.addLibraryPath(b.path("src/"));
     
     var sources = std.ArrayList([]const u8).init(b.allocator);
     const path = "src";
