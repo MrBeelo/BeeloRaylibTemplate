@@ -15,7 +15,8 @@ The target platform (native/windows/macos/linux-gnu/etc.)
 If cross-compiling to Mac or Linux, you should also set some more settings related to the SDKs.
 You can also set whether or not to immediately run the project after exporting.
 
-4) Run zig build or make (if you use it). An executable should pop up in the zig-out/<platform> directory.
+4) Run zig build or make (if you use it). An executable should pop up in the zig-out/(platform>) directory
+if you're using make, or just zig-out if you're using zig build.
 
 
 --FILE STRUCTURE--
@@ -41,4 +42,4 @@ the same name of the platform you're compiling to.
 
 2) make clean: Will delete the zig-out directory.
 
-3) make clean-this: Will delete the zig-out/<platform> directory.
+3) make clean-this: Will delete the zig-out/(platform) directory.
