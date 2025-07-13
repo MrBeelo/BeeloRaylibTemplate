@@ -40,5 +40,8 @@ build:
 	
 clean:
 	rm -rf zig-out
+	
+clean-this:
+	rm -rf zig-out/$(PLATFORM)
 
 .PHONY:
