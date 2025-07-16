@@ -14,6 +14,7 @@ int main(void)
             ClearBackground(RAYWHITE);
             DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
             DrawTexture(blob, 400 - (blob.width / 2), 150, WHITE);
+				DrawText(TextFormat("FPS: %.1d", GetFPS()), 10, 10, 32, LIGHTGRAY);
         EndDrawing();
     }
 
