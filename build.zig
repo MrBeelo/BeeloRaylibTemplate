@@ -20,6 +20,9 @@ pub fn build(b: *std.Build) !void {
     
     exe.linkLibC();
     
+    const include_cpp_opt = b.option(bool, "include-cpp", "Includes the C++ standard library");
+    if(include_cpp_opt orelse false) exe.linkLibCpp();
+    
     var sources = std.ArrayList([]const u8).init(b.allocator);
     const path = "src";
     {

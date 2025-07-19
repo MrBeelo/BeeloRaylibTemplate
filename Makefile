@@ -1,10 +1,13 @@
 #--SETTINGS--
 
-#Some options: native, windows, macos, linux-gnu
+#Platform to build for. Some options: native, windows, macos, linux-gnu
 PLATFORM ?= native
 
-#Some options: native, x86_64, i386, aarm64
+#Architecture to build for. Some options: native, x86_64, i386, aarm64
 ARCH ?= native
+
+#Adds the C++ standard library if true.
+INCLUDES_CPP ?= false
 
 #Run the project immediately after export?
 RUN = true
@@ -25,6 +28,10 @@ FLAGS :=
 
 ifeq ($(RUN), true)
 	FLAGS += run
+endif
+
+ifeq ($(INCLUDES_CPP), true)
+	FLAGS += -Dinclude-cpp=true
 endif
 
 ifeq ($(PLATFORM), linux-gnu)
