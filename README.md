@@ -1,5 +1,6 @@
 Simple raylib template for raylib 5.5
-To clone: git clone --recurse-submodules https://github.com/MrBeelo/BeeloRaylibTemplate.git
+
+*To clone: git clone --recurse-submodules https://github.com/MrBeelo/BeeloRaylibTemplate.git*
 
 
 --HOW TO USE--
