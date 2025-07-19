@@ -6,7 +6,7 @@ int main(void)
     InitWindow(800, 450, "Beelo's Raylib Template");
     SearchAndSetResourceDir("res");
 
-    Texture2D blob = LoadTexture("assets/sprite/blob.png");
+    Texture2D blob = LoadTexture("blob.png");
     
     while (!WindowShouldClose())
     {
